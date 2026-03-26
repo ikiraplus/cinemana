@@ -546,9 +546,202 @@
       .icon-ring { margin-bottom:6px; }
       .app-name { font-size:12px; }
     }
+
+
+    /* ═══════════════ CERT EXPIRED MODAL ═══════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 5000;
+      background: rgba(2, 10, 10, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px;
+      opacity: 0; visibility: hidden;
+      transition: opacity var(--t-med) ease, visibility var(--t-med) ease;
+    }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    body.modal-open { overflow: hidden; }
+    .cert-modal {
+      width: 100%; max-width: 340px;
+      background: linear-gradient(180deg, rgba(7,31,30,0.98), rgba(8,25,24,0.98));
+      border: 1.5px solid rgba(45,212,191,0.22);
+      border-radius: 22px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,212,191,0.06) inset;
+      padding: 16px 14px 12px;
+      position: relative;
+      overflow: hidden;
+      transform: translateY(14px) scale(0.96);
+      transition: transform var(--t-slow) var(--ease-out), opacity var(--t-med) ease;
+    }
+    .modal-overlay.show .cert-modal { transform: translateY(0) scale(1); }
+    .cert-modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(45,212,191,0.14), transparent 35%),
+        linear-gradient(135deg, rgba(45,212,191,0.06), transparent 55%);
+      pointer-events: none;
+    }
+    .modal-close-x {
+      position: absolute; top: 10px; left: 10px;
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid rgba(45,212,191,0.16);
+      background: rgba(255,255,255,0.04); color: #d7fffb;
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform var(--t-med) var(--ease-bounce), background var(--t-fast) ease;
+      z-index: 2;
+    }
+    .modal-close-x:hover { transform: scale(1.08) rotate(90deg); background: rgba(45,212,191,0.12); }
+    .modal-close-x:active { transform: scale(0.9); }
+    .modal-icon-wrap {
+      width: 108px; height: 108px; margin: 4px auto 14px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle, rgba(45,212,191,0.18), rgba(13,148,136,0.08));
+      border: 1px solid rgba(45,212,191,0.16);
+      box-shadow: 0 0 0 8px rgba(45,212,191,0.03), 0 0 0 1px rgba(45,212,191,0.08) inset;
+      position: relative;
+    }
+    .modal-icon-wrap::after {
+      content: '';
+      position: absolute; inset: -9px;
+      border-radius: 50%; border: 1px dashed rgba(45,212,191,0.18);
+    }
+    .modal-icon {
+      width: 58px; height: 58px; border-radius: 14px;
+      background: rgba(45,212,191,0.08);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+    .modal-status-badge {
+      width: fit-content; max-width: 100%;
+      margin: 0 auto 18px; padding: 7px 12px;
+      border-radius: 999px; font-size: 11px; font-weight: 900;
+      color: #99fff2; letter-spacing: 0.3px;
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.22);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .modal-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #2dd4bf; box-shadow: 0 0 0 0 rgba(45,212,191,0.65);
+      animation: certPulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .cert-modal-title {
+      font-size: clamp(28px, 7vw, 40px);
+      line-height: 1.25; color: #ffffff; font-weight: 900;
+      text-align: center; margin-bottom: 12px; letter-spacing: -0.8px;
+      position: relative; z-index: 1;
+    }
+    .cert-modal-desc {
+      text-align: center; color: #b9d8d5; font-size: 13px; line-height: 1.75;
+      margin-bottom: 18px; position: relative; z-index: 1;
+    }
+    .cert-modal-desc strong { color: #ffffff; }
+    .cert-modal-tip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(45,212,191,0.15);
+      border-radius: 22px; padding: 11px 11px 10px;
+      margin-bottom: 18px; position: relative; z-index: 1;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12) inset;
+    }
+    .cert-modal-tip-title {
+      color: #99fff2; font-size: 14px; font-weight: 900; margin-bottom: 7px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .cert-modal-tip p {
+      color: #d8f7f3; font-size: 12px; line-height: 1.75; text-align: center;
+    }
+    .cert-modal-tip strong { color: #ffffff; }
+    .modal-actions { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
+    .modal-primary-btn, .modal-secondary-btn {
+      width: 100%; border: none; text-decoration: none; cursor: pointer;
+      border-radius: 16px; padding: 18px 16px; text-align: center;
+      font-family: 'STC','Cairo',sans-serif; font-weight: 900;
+      transition: transform var(--t-med) var(--ease-bounce), box-shadow var(--t-med) ease, background var(--t-med) ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .modal-primary-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; font-size: 14px;
+      box-shadow: 0 14px 30px rgba(13,148,136,0.32);
+    }
+    .modal-primary-btn:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 18px 34px rgba(13,148,136,0.4); }
+    .modal-secondary-btn {
+      background: rgba(255,255,255,0.03);
+      color: #bdd4d2; font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .modal-secondary-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.06); }
+    body.dark .modal-overlay { background: rgba(0,0,0,0.78); }
+    body.dark .cert-modal {
+      background: linear-gradient(180deg, rgba(7,18,18,0.98), rgba(7,15,15,0.98));
+      border-color: rgba(45,212,191,0.18);
+    }
+    @media (max-width: 480px) {
+      .cert-modal { padding: 22px 16px 16px; border-radius: 24px; }
+      .modal-icon-wrap { width: 94px; height: 94px; }
+      .cert-modal-title { font-size: 25px; }
+      .cert-modal-desc { font-size: 12px; }
+      .cert-modal-tip p { font-size: 14px; }
+      .modal-primary-btn, .modal-secondary-btn { padding: 16px 14px; font-size: 13px; }
+    }
+
+  
+    @media (max-width: 480px) {
+      .cert-modal { max-width: 320px; padding: 14px 12px 10px; }
+      .cert-modal-title { font-size: 22px; }
+      .cert-modal-desc { font-size: 13px; }
+      .modal-primary-btn, .modal-secondary-btn { font-size: 13px; padding: 10px 12px; }
+    }
+
   </style>
 </head>
 <body>
+
+  <div class="modal-overlay" id="certExpiredModal" aria-hidden="true">
+    <div class="cert-modal" role="dialog" aria-modal="true" aria-labelledby="certExpiredTitle">
+      <button class="modal-close-x" id="closeCertModal" aria-label="إغلاق">×</button>
+      <div class="modal-icon-wrap">
+        <div class="modal-icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7ef7ea" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3z"></path>
+            <path d="M9 9l6 6"></path>
+            <path d="M15 9l-6 6"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-status-badge">
+        <span class="modal-status-dot"></span>
+        <span>CERTIFICATE EXPIRED</span>
+      </div>
+      <h2 class="cert-modal-title" id="certExpiredTitle">انتهت صلاحية الشهادة</h2>
+      <p class="cert-modal-desc">
+        الشهادة المجانية المرتبطة بهذا التطبيق قد <strong>انتهت مدتها</strong>،
+        لذلك قد لا يعمل التطبيق حتى لو سبق لك تثبيته على جهازك.
+      </p>
+      <div class="cert-modal-tip">
+        <div class="cert-modal-tip-title">
+          <span>نصيحة للمتابعة</span>
+          <span>⚠️</span>
+        </div>
+        <p>
+          إذا أردت الاستمرار باستخدام التطبيق، تواصل مع المطور
+          <strong>Dyala Youssif</strong> من أجل <strong>تجديد الشهادة</strong>
+          أو شراء <strong>شهادة سنوية</strong> ثم إعادة تفعيل التطبيق.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <a class="modal-primary-btn" href="https://t.me/iDyala" target="_blank" rel="noopener">
+          <span>تواصل مع المطور على Telegram</span>
+        </a>
+        <button class="modal-secondary-btn" id="dismissCertModal">حسنًا، فهمت — تصفح الصفحة فقط</button>
+      </div>
+    </div>
+  </div>
+
   <canvas id="bg"></canvas>
   <div id="toast"></div>
   <button class="theme-toggle" id="themeToggle" title="تغيير الثيم" aria-label="تغيير الثيم">🌙</button>
@@ -870,6 +1063,46 @@
       tgBtn.addEventListener('mouseup',     tgRelease);
       tgBtn.addEventListener('mouseleave',  tgRelease);
     }
+
+
+    /* ══════════════════════════════════════
+       CERT EXPIRED MODAL
+    ══════════════════════════════════════ */
+    const certModal = document.getElementById('certExpiredModal');
+    const certModalClose = document.getElementById('closeCertModal');
+    const certModalDismiss = document.getElementById('dismissCertModal');
+
+    function openCertModal() {
+      if (!certModal) return;
+      certModal.classList.add('show');
+      certModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeCertModal() {
+      if (!certModal) return;
+      certModal.classList.remove('show');
+      certModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+    }
+
+    if (certModal) {
+      window.addEventListener('load', () => {
+        setTimeout(openCertModal, 500);
+      });
+
+      certModalClose?.addEventListener('click', closeCertModal);
+      certModalDismiss?.addEventListener('click', closeCertModal);
+
+      certModal.addEventListener('click', e => {
+        if (e.target === certModal) closeCertModal();
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && certModal.classList.contains('show')) closeCertModal();
+      });
+    }
+
   </script>
 </body>
 </html>
